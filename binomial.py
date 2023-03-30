@@ -3,6 +3,7 @@ import math
 
 from derivative_value import call_value_func as value_func
 
+
 # parent u refers to the node that goes a down path to reach the current node
 
 class Node:
@@ -80,33 +81,20 @@ class Binomial_Tree:
                 head = self._find_layer_head(layer_i)
                 node_idx = head + node_i
                 child_u,child_d = self._find_child_idx(node_idx)
+                # print(f"parent:{node_idx},u:{child_u},d:{child_d}")
                 if child_u and child_d: 
-                    self.node_list[node_idx].update(self.node_list[child_u].s_t,self.node_list[child_d].s_t,self.p)
+                    self.node_list[node_idx].update(self.node_list[child_u].value,self.node_list[child_d].value,self.p)
                 else:
                      self.node_list[node_idx].update_leaf()
-    
-    def run(self):
-        self.forward()
-        self.backwards()
 
     def get_price(self):
         root = self.node_list[0]
         return root.value
     
     def print_tree(self):
-        print(self.node_list[0])
+        print("0:",self.node_list[0])
         for layer_i in range(1,self.steps+1):
             head = self._find_layer_head(layer_i)
             for node_i in range(layer_i+1):
-                print(self.node_list[head+node_i],end=" | ")
+                print(head+node_i, ":", self.node_list[head+node_i],end=" | ")
             print()
-
-        
-
-
-
-
-
-        
-
-
