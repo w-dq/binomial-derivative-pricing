@@ -3,7 +3,7 @@
     "T": 1,
     "sigma": 0.1,
     "N": 5,
-    "r": 0,
+    "r": 0.1,
     "k": 100,
     "american": false,
     "knock_out": null,

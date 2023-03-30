@@ -15,15 +15,17 @@ class Node:
         self.american = american
         self.ko = None
         self.ko_direction = True
+        self.discount = 1
 
-    def construct(self, s, ev, ko, di):
+    def construct(self, s, ev, ko, di, discount):
         self.s_t = s
         self.excercise_value = ev
         self.ko = ko
         self.ko_direction = di
+        self.discount = discount
 
     def update(self,u_val,d_val,p):
-        self.expected_value = p * u_val + (1 - p)*d_val
+        self.expected_value = ( p * u_val + (1 - p)*d_val ) * self.discount
         
         if self.american:
             _val = max(self.excercise_value,self.expected_value)
@@ -65,7 +67,13 @@ class Binomial_Tree:
         self.deltaT = T / N
         self.number_of_nodes = int(((N+2)*(N+1))/2)
         self.node_list = [Node(american) for _ in range(self.number_of_nodes)]
-        self.ko_direction = knock_out > s0
+        if knock_out:
+            self.ko_direction = knock_out > s0
+        else:
+            self.ko_direction = None
+        self.period_discount = math.exp(-self.deltaT*r)
+
+
         self._compute_CRR()
     
     def _compute_CRR(self):
@@ -90,13 +98,13 @@ class Binomial_Tree:
     
     def forward(self):
         ev = self.value_func(self.s0,self.strike)
-        self.node_list[0].construct(self.s0, ev, self.knock_out, self.ko_direction)
+        self.node_list[0].construct(self.s0, ev, self.knock_out, self.ko_direction, self.period_discount)
         for layer_i in range(1,self.steps+1):
             head = self._find_layer_head(layer_i)
             for node_i in range(layer_i+1):
                 s_t = self.s0 * (self.up_move ** (layer_i-node_i)) * (self.down_move ** node_i)
                 ev = self.value_func(s_t,self.strike)
-                self.node_list[head+node_i].construct(s_t, ev, self.knock_out, self.ko_direction)
+                self.node_list[head+node_i].construct(s_t, ev, self.knock_out, self.ko_direction, self.period_discount)
 
     def backwards(self):
         for layer_i in range(self.steps,-1,-1):
