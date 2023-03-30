@@ -1,0 +1,12 @@
+{
+    "s0": 100,
+    "T": 1,
+    "sigma": 0.1,
+    "N": 50,
+    "r": 0,
+    "k": 100,
+    "american": false,
+    "knock_out": null,
+    "knock_in": null,
+    "value_function": "call_value_func"
+}
