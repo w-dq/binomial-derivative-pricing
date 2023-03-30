@@ -1,6 +1,6 @@
 # binomial-derivative-pricing
 
-
+need `numpy` installed
 
 ### How to use
 

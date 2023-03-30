@@ -16,15 +16,37 @@ if __name__ == "__main__":
     r = config["r"]                             # Risk-free rate
     k = config["k"]                             # Stirke price, if applicable
     american = config["american"]               # If American-style
+    ko = config["knock_out"]                    # Knock out level, if none please use null
+    ki = config["knock_in"]                     # Knock out level, if none please use null
     value_func_name = config["value_function"]  # Value function fo the derivative
 
     module = importlib.import_module("derivative_value")
     value_func = getattr(module, value_func_name)
 
-    tree = Binomial_Tree(s0,T,sigma,N,r,k,american,value_func)
+    final_price = None
+    if ki: 
+        ko = ki
+        tree = Binomial_Tree(s0,T,sigma,N,r,k,american,ko,value_func)
+        tree.forward()
+        tree.backwards()
+        # tree.print_tree()
+        ko_price = tree.get_price()
 
-    tree.forward()
-    tree.backwards()
-    # tree.print_tree()
-    print(tree.get_price())
+        ko = None
+        tree = Binomial_Tree(s0,T,sigma,N,r,k,american,ko,value_func)
+        tree.forward()
+        tree.backwards()
+        # tree.print_tree()
+        rep_price = tree.get_price()
+
+        final_price = rep_price - ko_price
+
+    else:
+        tree = Binomial_Tree(s0,T,sigma,N,r,k,american,ko,value_func)
+        tree.forward()
+        tree.backwards()
+        # tree.print_tree()
+        final_price = tree.get_price()
+
+    print(final_price)  
     print(bsm_option_price(s0,k,r,sigma,T))
