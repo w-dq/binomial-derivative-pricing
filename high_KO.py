@@ -24,35 +24,34 @@ if __name__ == "__main__":
     value_func = getattr(module, value_func_name)
 
     x_axis = []
-    ame_list = []
-    eur_list = []
+    ko_list = []
+    sim_list = []
 
     # for k in range(60,200,10):
-    for r in [-0.2,-0.1,-0.05, 0 ,0.01, 0.05]:
+    for ko in [120, 140, 160, 200, 250, 400]:
         x_axis = []
-        ame_list = []
-        eur_list = []
+        ko_list = []
+        sim_list = []
         for k in range(10,150,10):
             x_axis.append(k)
 
-            american = False
-            tree = Binomial_Tree(s0,T,sigma,N,r,k,american,ko,value_func)
-            tree.forward()
-            tree.backwards()
-            eur_list.append(tree.get_price())
 
-            american = True
             tree = Binomial_Tree(s0,T,sigma,N,r,k,american,ko,value_func)
             tree.forward()
             tree.backwards()
-            ame_list.append(tree.get_price())
+            ko_list.append(tree.get_price())
+
+            tree = Binomial_Tree(s0,T,sigma,N,r,k,american,None,value_func)
+            tree.forward()
+            tree.backwards()
+            sim_list.append(tree.get_price())
 
 
         fig, ax = plt.subplots()
-        ax.plot(x_axis, ame_list, label="American")
-        ax.plot(x_axis, eur_list, label="European")
+        ax.plot(x_axis, ko_list, label="With KO")
+        ax.plot(x_axis, sim_list, label="Simple Call")
         ax.legend()
         ax.set_xlabel("Strike (K)")
-        ax.set_title(f"American and European price comparison r:{r}, S:100")
+        ax.set_title(f"American and European price comparison ko:{ko}, S:100")
         # plt.show()
-        plt.savefig(f"ame_eur_result/{r}.png")
+        plt.savefig(f"high_KO_result/{ko}.png")
