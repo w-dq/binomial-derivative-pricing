@@ -1,6 +1,6 @@
 # binomial-derivative-pricing
 
-need `numpy` installed
+need `numpy` `matplotlib` installed
 
 ### How to use
 
@@ -12,6 +12,7 @@ Run `convergence.py` to seed how tree and analytical price converges.
 
 Run `high_KO.py` to see how the price of Konck-out option and simple option compares when knock-out level increases.
 
+To run everything in one go, use bash `bash project.sh`
 ### How to config
 
 ```
